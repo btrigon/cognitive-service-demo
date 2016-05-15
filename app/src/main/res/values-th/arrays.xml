@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+
+    <string-array name="categories">
+        <item>โกรธ</item>
+        <item>ดูถูก</item>
+        <item>ขยะแขยง</item>
+        <item>กลัว</item>
+        <item>ความสุข</item>
+        <item>เฉยๆ</item>
+        <item>เศร้า</item>
+        <item>ประหลาดใจ</item>
+    </string-array>
+
+</resources>

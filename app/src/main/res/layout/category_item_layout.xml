@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+
+<com.example.facetest.ui.widget.AspectRatioView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:id="@+id/category_arview"
+    app:aspectRatio="1.0"
+    android:background="@android:color/holo_blue_light"
+    android:layout_height="wrap_content">
+    <ImageView
+        android:src="@drawable/mask2"
+        android:scaleType="fitXY"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+    <RelativeLayout
+        android:padding="16dp"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <TextView
+            android:layout_centerHorizontal="true"
+            android:layout_alignParentBottom="true"
+            android:id="@+id/category_title"
+            android:textColor="@android:color/white"
+            android:textSize="24dp"
+            style="@style/TextViewCustomBoldFont"
+            tools:text="TITLE"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+        <ImageView
+            android:id="@+id/image"
+            android:tint="@android:color/white"
+            android:layout_above="@id/category_title"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scaleType="fitCenter"
+            android:layout_marginBottom="4dp"
+            android:src="@drawable/ic_unknown"
+            />
+    </RelativeLayout>
+    </com.example.facetest.ui.widget.AspectRatioView>

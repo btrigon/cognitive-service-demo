@@ -1,0 +1,27 @@
+<resources>
+    <string name="app_name" translatable="false">EmotePhoto</string>
+    <string name="action_settings" translatable="false">Settings</string>
+    <string name="title_activity_camera" translatable="false">CameraActivity</string>
+    <string name="title_activity_category_select" translatable="false">EmotePhoto</string>
+
+    <string name="category_title">Select Emotion</string>
+    <string name="send_photo_title">Send Photo</string>
+
+    <string name="winner">Winner</string>
+    <string name="loser">Loser</string>
+
+    <string name="take_photo">Take %1$s picture</string>
+    <string name="result_title">Top %1$d %2$s ranking</string>
+
+    <string name="send_photo">Sending Photo&#8230;</string>
+    <string name="wait_30_secs">may take up to 30 seconds</string>
+    <string name="no_faces_found">No faces found. Try again.</string>
+
+    <string name="button_allow">Allow</string>
+    <string name="button_deny">Deny</string>
+    <string name="permission_camera_rationale">Camera permission is needed to show the camera preview.</string>
+    <string name="permission_camera_denied">Camera permission was denied. Please consider granting it in order to access the camera!</string>
+    <string name="permission_camera_never_askagain">Camera permission was denied with never ask again.</string>
+
+
+</resources>

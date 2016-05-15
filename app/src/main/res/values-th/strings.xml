@@ -1,0 +1,16 @@
+<resources>
+
+    <string name="category_title">เลือกอารมณ์</string>
+    <string name="send_photo_title">ส่งภาพกลุ่ม</string>
+
+    <string name="winner">ผู้ชนะ</string>
+    <string name="loser">ผู้แพ้</string>
+
+    <string name="take_photo">ถ่ายรูปแบบ %1$s</string>
+    <string name="result_title">%1$d อันดับ %2$s</string>
+
+    <string name="send_photo">กำลังส่งรูป&#8230;</string>
+    <string name="wait_30_secs">อาจใช้เวลานานถึง 30 วินาที</string>
+    <string name="no_faces_found">ไม่พบหน้า ลองอีกครั้ง</string>
+
+</resources>

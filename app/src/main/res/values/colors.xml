@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#3F51B5</color>
+    <color name="colorPrimaryDark">#303F9F</color>
+    <color name="colorAccent">#FF4081</color>
+
+    <color name="theme_grey">#757575</color>
+
+    <color name="mpb_color">#3F51B5</color>
+    <color name="mpb_default_color">#FF4081</color>
+
+    <color name="light_blue">#A5DBEB</color>
+    <color name="light_green">#CAFFD8</color>
+    <color name="light_pink">#EFA9FE</color>
+    <color name="light_red">#FF7575</color>
+
+    <color name="gunmetal_grey">#2C3539</color>
+
+    <color name="light_green_80">#CCCAFFD8</color>
+    <color name="light_red_80">#CCFF7575</color>
+
+
+</resources>

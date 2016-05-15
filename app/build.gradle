@@ -1,0 +1,124 @@
+apply plugin: 'com.android.application'
+apply plugin: 'com.neenbedankt.android-apt'
+
+buildscript {
+    repositories {
+        mavenCentral()
+        jcenter()
+    }
+
+    dependencies {
+        classpath 'com.neenbedankt.gradle.plugins:android-apt:1.8'
+    }
+}
+// Manifest version information
+def versionMajor = 0
+def versionMinor = 1
+def versionPatch = 3
+def versionBuild = 7
+def versionMajorMinorPatch = "${versionMajor}.${versionMinor}.${versionPatch}"
+def versionMajorMinorPatchBuild = "${versionMajor}.${versionMinor}.${versionPatch}.${versionBuild}"
+def buildTime = new Date().getTime()
+
+android {
+    compileSdkVersion 23
+    buildToolsVersion "23.0.3"
+
+    defaultConfig {
+        applicationId "com.example.facetest"
+        minSdkVersion 16
+        targetSdkVersion 23
+        versionCode versionMajor * 10000 + versionMinor * 1000 + versionPatch * 100 + versionBuild
+        versionName versionMajorMinorPatch
+        buildConfigField "long", "BUILD_TIME", "${buildTime}l"
+    }
+
+    lintOptions {
+        disable 'InvalidPackage' //for Butter Knife
+    }
+
+    dexOptions {
+        javaMaxHeapSize "4g"
+    }
+
+    buildTypes {
+        release {
+            buildConfigField "String", "VERSION_NAME_FULL", "\"${versionMajorMinorPatchBuild}\""
+            minifyEnabled true
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+
+    packagingOptions {
+        // Exclude files to avoid packaging collisions (same file name in multiple dependencies).
+        exclude 'META-INF/LICENSE'
+        exclude 'META-INF/LICENSE.txt'
+        exclude 'META-INF/license.txt'
+        exclude 'META-INF/NOTICE'
+        exclude 'META-INF/NOTICE.txt'
+        exclude 'META-INF/notice.txt'
+        exclude 'META-INF/ASL2.0'
+        exclude 'META-INF/services/javax.annotation.processing.Processor'
+    }
+}
+
+repositories {
+    mavenCentral()
+    jcenter()
+}
+
+ext {
+    // versions for libraries with multiple dependencies
+    supportLibVersion = "23.3.0"
+    daggerVersion = "2.2"
+    okhttpVersion = "3.2.0"
+    retrofitVersion = "2.0.2"
+    jacksonVersion = "2.7.4"
+    googleGMSVersion = "8.4.0"
+    permissionsDispatcherVersion = "2.1.2"
+}
+
+
+dependencies {
+    compile fileTree(dir: 'libs', include: ['*.jar'])
+    testCompile 'junit:junit:4.12'
+    compile "com.android.support:appcompat-v7:${supportLibVersion}"
+    compile "com.android.support:support-v13:${supportLibVersion}"
+    compile "com.android.support:design:${supportLibVersion}"
+    compile "com.android.support:cardview-v7:${supportLibVersion}"
+    compile 'com.google.guava:guava:19.0'
+
+    compile 'com.github.bumptech.glide:glide:3.7.0'
+    compile 'com.github.bumptech.glide:okhttp-integration:1.3.1'
+
+    //Networking
+    compile "com.squareup.retrofit2:retrofit:${retrofitVersion}"
+    compile "com.squareup.retrofit2:converter-jackson:${retrofitVersion}"
+    compile "com.squareup.okhttp3:okhttp:${okhttpVersion}"
+    compile "com.squareup.okhttp3:logging-interceptor:${okhttpVersion}"
+    compile "com.squareup.okhttp3:okhttp-urlconnection:${okhttpVersion}"
+
+    // custom fonts
+    compile 'uk.co.chrisjenx:calligraphy:2.1.0'
+
+    //Binding
+    compile 'com.jakewharton:butterknife:7.0.1'
+
+    //Ripple View animation
+    compile 'com.balysv:material-ripple:1.0.2'
+
+    //Event bus
+    compile 'com.squareup:otto:1.3.8'
+
+    compile 'de.hdodenhof:circleimageview:2.0.0'
+    compile 'com.liulishuo.magicprogresswidget:library:1.0.7'
+
+    compile "com.github.hotchemi:permissionsdispatcher:${permissionsDispatcherVersion}"
+    apt "com.github.hotchemi:permissionsdispatcher-processor:${permissionsDispatcherVersion}"
+
+    // Dagger 2
+    compile "com.google.dagger:dagger:${daggerVersion}"
+    apt "com.google.dagger:dagger-compiler:${daggerVersion}"
+    provided 'javax.annotation:jsr250-api:1.0'
+
+}

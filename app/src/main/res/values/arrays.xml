@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+
+    <string-array name="categories">
+        <item>Anger</item>
+        <item>Contempt</item>
+        <item>Disgust</item>
+        <item>Fear</item>
+        <item>Happiness</item>
+        <item>Neutral</item>
+        <item>Sadness</item>
+        <item>Surprise</item>
+    </string-array>
+
+</resources>
