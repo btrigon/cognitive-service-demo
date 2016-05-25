@@ -34,7 +34,6 @@ import com.example.facetest.presenter.PresenterManager;
 import com.example.facetest.utils.ImageSelectorUtil;
 import com.example.facetest.utils.ImageUtils;
 import com.liulishuo.magicprogresswidget.MagicProgressBar;
-import com.squareup.otto.Bus;
 
 import java.util.List;
 
@@ -62,9 +61,6 @@ public class GroupPhotoFragment extends Fragment implements GroupPhotoView {
     @Inject
     @Named("uncachedEmotionApi")
     EmotionApiInterface mEmotionApi;
-
-    @Inject
-    Bus mEventBus;
 
     private Bitmap mCurrentCameraBitmap;
     private GroupPhotoPresenter mPresenter;
@@ -210,28 +206,6 @@ public class GroupPhotoFragment extends Fragment implements GroupPhotoView {
         } else {
             mPresenter = PresenterManager.getInstance().restorePresenter(savedInstanceState);
         }
-    }
-
-    /**
-     * Called when the Fragment is visible to the user.  This is generally
-     * tied to {Activity#onStart() Activity.onStart} of the containing
-     * Activity's lifecycle.
-     */
-    @Override
-    public void onStart() {
-        super.onStart();
-        mEventBus.register(this);
-    }
-
-    /**
-     * Called when the Fragment is no longer started.  This is generally
-     * tied to {Activity#onStop() Activity.onStop} of the containing
-     * Activity's lifecycle.
-     */
-    @Override
-    public void onStop() {
-        super.onStop();
-        mEventBus.unregister(this);
     }
 
     /**

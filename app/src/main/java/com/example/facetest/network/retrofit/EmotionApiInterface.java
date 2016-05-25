@@ -10,6 +10,7 @@ import retrofit2.http.Body;
 import retrofit2.http.Header;
 import retrofit2.http.Headers;
 import retrofit2.http.POST;
+import rx.Observable;
 
 /**
  * Created by Benjamin on 15/05/16.
@@ -22,7 +23,7 @@ public interface EmotionApiInterface {
             "Content-Type: charset=utf-8"
     })
     @POST("recognize")
-    Call<List<FaceEmotion>> sendPhoto(
+    Observable<List<FaceEmotion>> sendPhoto(
             @Header("Ocp-Apim-Subscription-Key") String apiKey,
             @Body RequestBody image
     );

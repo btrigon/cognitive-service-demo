@@ -3,7 +3,7 @@ package com.example.facetest.di2;
 import android.content.SharedPreferences;
 
 import com.example.facetest.network.retrofit.EmotionApiInterface;
-import com.squareup.otto.Bus;
+import com.example.facetest.rx.RxBus;
 
 import javax.inject.Named;
 import javax.inject.Singleton;
@@ -20,7 +20,8 @@ public interface NetComponent {
     @Named("uncachedEmotionApi")
     EmotionApiInterface getUncachedApiEndpointInterface();
 
+    RxBus getRxBus();
+
     SharedPreferences getSharedPreferences();
 
-    Bus getEventBus();
 }

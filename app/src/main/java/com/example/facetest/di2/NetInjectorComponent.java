@@ -1,5 +1,7 @@
 package com.example.facetest.di2;
 
+import com.example.facetest.ui.categoryselect.CategoryAdapter;
+import com.example.facetest.ui.categoryselect.CategorySelectActivity;
 import com.example.facetest.ui.categoryselect.CategorySelectPresenter;
 import com.example.facetest.ui.groupphoto.GroupPhotoFragment;
 import com.example.facetest.ui.groupphoto.GroupPhotoPresenter;
@@ -16,5 +18,7 @@ public interface NetInjectorComponent {
     void inject (GroupPhotoFragment groupPhotoFragment);
     void inject (GroupPhotoPresenter groupPhotoPresenter);
     void inject (CategorySelectPresenter categorySelectPresenter);
+    void inject (CategoryAdapter categoryAdapter);
+    void inject (CategorySelectActivity categorySelectActivity);
 
 }

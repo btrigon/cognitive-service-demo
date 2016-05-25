@@ -1,16 +1,24 @@
 package com.example.facetest.ui.categoryselect;
 
 import android.support.annotation.NonNull;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.balysv.materialripple.MaterialRippleLayout;
+import com.example.facetest.FaceTestApplication;
 import com.example.facetest.R;
 import com.example.facetest.adapter.MvpRecyclerListAdapter;
+import com.example.facetest.di2.DaggerNetInjectorComponent;
 import com.example.facetest.models.CategoryItem;
+import com.example.facetest.network.retrofit.EmotionApiInterface;
+import com.example.facetest.rx.RxBus;
 
 import java.util.List;
+
+import javax.inject.Inject;
+import javax.inject.Named;
 
 /**
  * Created by Benjamin on 15/05/16.
@@ -20,12 +28,17 @@ public class CategoryAdapter extends MvpRecyclerListAdapter<CategoryItem, Catego
     private static final int MIN_CLICK_INTERVAL = 1000;  //ms
     private List<CategoryItem> mCategoryItems;
     private long mLastClickTime;
-    private CategoryAdapterListener mCategoryListener;
 
-    public CategoryAdapter(List<CategoryItem> mCategoryItems, CategoryAdapterListener listener) {
+    @Inject
+    RxBus rxBus;
+
+    public CategoryAdapter(List<CategoryItem> mCategoryItems) {
         this.mCategoryItems = mCategoryItems;
         mLastClickTime = 0;
-        mCategoryListener = listener;
+        DaggerNetInjectorComponent.builder()
+            .netComponent(FaceTestApplication.getNetComponent())
+            .build()
+            .inject(this);
     }
 
     @NonNull
@@ -117,19 +130,24 @@ public class CategoryAdapter extends MvpRecyclerListAdapter<CategoryItem, Catego
             public void onClick(View v) {
                 if(System.currentTimeMillis() - mLastClickTime < MIN_CLICK_INTERVAL){
                     //clicked too fast
+                    //TODO: try RxBinding throttleFirst
                     return;
                 }
                 mLastClickTime = System.currentTimeMillis();
-                if(mCategoryListener!=null){
-                    mCategoryListener.onCategorySelected(mCategoryItems.get(position));
-                }
-
+                Log.d("CategoryAdapter", "click" );
+                rxBus.send(new CategorySelectEvent(mCategoryItems.get(position)));
             }
         });
     }
 
-    public interface CategoryAdapterListener{
-        void onCategorySelected(CategoryItem categoryItem);
+    public static class CategorySelectEvent{
+        private CategoryItem categoryItem;
+        public CategorySelectEvent(CategoryItem categoryItem) {
+            this.categoryItem = categoryItem;
+        }
+        public CategoryItem getCategoryItem() {
+            return categoryItem;
+        }
     }
 
 }

@@ -6,7 +6,6 @@ import com.example.facetest.models.CategoryItem;
 import com.example.facetest.network.retrofit.EmotionApiInterface;
 import com.example.facetest.presenter.BasePresenter;
 import com.example.facetest.ui.categoryselect.CategorySelectView;
-import com.squareup.otto.Bus;
 
 import java.util.List;
 
@@ -22,9 +21,6 @@ public class CategorySelectPresenter extends BasePresenter<List<CategoryItem>, C
     @Inject
     @Named("uncachedEmotionApi")
     EmotionApiInterface mEmotionApi;
-
-    @Inject
-    Bus mEventBus;
 
     @Override
     protected void updateView() {

@@ -22,9 +22,11 @@ import javax.inject.Named;
 
 import okhttp3.MediaType;
 import okhttp3.RequestBody;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
+import rx.Observable;
+import rx.Subscriber;
+import rx.Subscription;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
 
 /**
  * Created by Benjamin on 15/05/16.
@@ -32,7 +34,7 @@ import retrofit2.Response;
 public class GroupPhotoPresenter extends BasePresenter<List<FaceEmotion>, GroupPhotoView> {
     private static final String TAG = "GroupPhotoPresenter";
     private boolean isLoadingData = false;
-    private Call<List<FaceEmotion>> mSendPhotoCall;
+    private Observable<List<FaceEmotion>> mSendPhotoCall;
     private CategoryItem mCategoryItem;
 
     @Inject
@@ -65,18 +67,30 @@ public class GroupPhotoPresenter extends BasePresenter<List<FaceEmotion>, GroupP
         }
     }
 
+    //TODO: not in Presentation layer, move to Domain
     private void submitPhoto(String API_KEY, RequestBody requestBody){
         mSendPhotoCall = mEmotionApi.sendPhoto(API_KEY, requestBody);
         isLoadingData = true;
-        mSendPhotoCall.enqueue(new Callback<List<FaceEmotion>>() {
-            @Override
-            public void onResponse(Call<List<FaceEmotion>> call, Response<List<FaceEmotion>> response) {
+        Subscription subscription = mSendPhotoCall
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Subscriber<List<FaceEmotion>>() {
+                    @Override
+                    public void onCompleted() {
 
-                isLoadingData = false;
-                view().updateUiOnSentSuccess();
-                if (response.isSuccessful()) {
-                    if (response.code() == 200) {
-                        setModel(response.body());
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        isLoadingData = false;
+                        view().updateUiOnSentFailed("submission failed: " + e.getMessage());
+                    }
+
+                    @Override
+                    public void onNext(List<FaceEmotion> faceEmotions) {
+                        isLoadingData = false;
+                        view().updateUiOnSentSuccess();
+                        setModel(faceEmotions);
                         if (model == null || model.size() == 0) {
                             view().updateUiOnSentFailed("no faces found, try again");
                         } else {
@@ -87,21 +101,8 @@ public class GroupPhotoPresenter extends BasePresenter<List<FaceEmotion>, GroupP
                             Collections.reverse(model);
                             view().animateResults(model, mCategoryItem.getCategoryId());
                         }
-                    } else {
-                        view().updateUiOnSentFailed("submission failed: " + response.message());
                     }
-                } else {
-                    view().updateUiOnSentFailed("submission failed: " + response.message());
-                }
-            }
-
-            @Override
-            public void onFailure(Call<List<FaceEmotion>> call, Throwable t) {
-                isLoadingData = false;
-                view().updateUiOnSentFailed("submission failed: " + t.getMessage());
-            }
-        });
-
+                });
     }
 
     public void setCategory(CategoryItem categoryItem){

@@ -5,10 +5,9 @@ import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 
 import com.example.facetest.network.retrofit.EmotionApiInterface;
-import com.squareup.otto.Bus;
+import com.example.facetest.rx.RxBus;
 
-import java.io.File;
-import java.io.IOException;
+
 import java.util.ArrayList;
 import java.util.concurrent.TimeUnit;
 
@@ -17,13 +16,12 @@ import javax.inject.Singleton;
 
 import dagger.Module;
 import dagger.Provides;
-import okhttp3.Cache;
-import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;
 import okhttp3.Protocol;
-import okhttp3.Response;
 import okhttp3.logging.HttpLoggingInterceptor;
+
 import retrofit2.Retrofit;
+import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory;
 import retrofit2.converter.jackson.JacksonConverterFactory;
 
 /**
@@ -68,6 +66,7 @@ public class NetModule {
     @Singleton
     Retrofit provideUncachedRetrofit(@Named("uncachedOkHttpClient") OkHttpClient okHttpClient){
         return new Retrofit.Builder()
+                .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
                 .baseUrl(API_BASE)
                 .client(okHttpClient)
                 .addConverterFactory(JacksonConverterFactory.create())
@@ -85,14 +84,14 @@ public class NetModule {
 
     @Provides
     @Singleton
-    SharedPreferences providesSharedPreferences(Application application) {
-        return PreferenceManager.getDefaultSharedPreferences(application);
+    RxBus providesRxBus(){
+        return new RxBus();
     }
 
     @Provides
     @Singleton
-    Bus providesEventBus(){
-        return new Bus();
+    SharedPreferences providesSharedPreferences(Application application) {
+        return PreferenceManager.getDefaultSharedPreferences(application);
     }
 
 

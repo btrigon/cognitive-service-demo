@@ -8,7 +8,10 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 
+import com.example.facetest.FaceTestApplication;
 import com.example.facetest.R;
+import com.example.facetest.di2.DaggerNetInjectorComponent;
+import com.example.facetest.rx.RxBus;
 import com.example.facetest.ui.BaseActivity;
 import com.example.facetest.ui.categoryselect.CategoryAdapter;
 import com.example.facetest.models.CategoryItem;
@@ -20,17 +23,26 @@ import com.example.facetest.ui.categoryselect.CategorySelectView;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.inject.Inject;
+
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import rx.functions.Action1;
+import rx.subscriptions.CompositeSubscription;
 
 /**
  * Created by Benjamin on 15/05/16.
  */
-public class CategorySelectActivity extends BaseActivity implements CategoryAdapter.CategoryAdapterListener, CategorySelectView {
+public class CategorySelectActivity extends BaseActivity implements CategorySelectView {
 
     private List<CategoryItem> mCategoryList;
     private CategoryAdapter mCategoryAdapter;
     private CategorySelectPresenter mPresenter;
+
+    @Inject
+    RxBus rxBus;
+
+    private CompositeSubscription rxSubscriptions;
 
     @Bind(R.id.category_recyclerview)
     RecyclerView mRecyclerView;
@@ -48,6 +60,11 @@ public class CategorySelectActivity extends BaseActivity implements CategoryAdap
         setContentView(R.layout.activity_category_select);
         ButterKnife.bind(this);
 
+        DaggerNetInjectorComponent.builder()
+                .netComponent(FaceTestApplication.getNetComponent())
+                .build()
+                .inject(this);
+
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
@@ -59,7 +76,7 @@ public class CategorySelectActivity extends BaseActivity implements CategoryAdap
 
         populateCategoryList();
 
-        mCategoryAdapter = new CategoryAdapter(mCategoryList, this);
+        mCategoryAdapter = new CategoryAdapter(mCategoryList);
         GridLayoutManager layoutManager = new GridLayoutManager(this, 2); // 2 columns
         layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         mRecyclerView.setAdapter(mCategoryAdapter);
@@ -68,24 +85,37 @@ public class CategorySelectActivity extends BaseActivity implements CategoryAdap
 
     }
 
-    /**
-     * Dispatch onResume() to fragments.  Note that for better inter-operation
-     * with older versions of the platform, at the point of this call the
-     * fragments attached to the activity are <em>not</em> resumed.  This means
-     * that in some cases the previous state may still be saved, not allowing
-     * fragment transactions that modify the state.  To correctly interact
-     * with fragments in their proper state, you should instead override
-     * {@link #onResumeFragments()}.
-     */
+    @Override
+    protected void onStart() {
+        super.onStart();
+        rxSubscriptions = new CompositeSubscription();
+        rxSubscriptions.add(rxBus.toObserverable()//
+                        .subscribe(new Action1<Object>() {
+                            @Override
+                            public void call(Object event) {
+                                if (event instanceof CategoryAdapter.CategorySelectEvent) {
+                                    Log.d("Act", "rec event");
+                                    Intent intent = new Intent(CategorySelectActivity.this, GroupPhotoActivity.class);
+                                    intent.putExtra(GroupPhotoActivity.CATEGORY_INTENT,
+                                            ((CategoryAdapter.CategorySelectEvent) event).getCategoryItem());
+                                    startActivity(intent);;
+                                }
+                            }
+                        }));
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        rxSubscriptions.clear();
+    }
+
     @Override
     protected void onResume() {
         super.onResume();
         mPresenter.bindView(this);
     }
 
-    /**
-     * Dispatch onPause() to fragments.
-     */
     @Override
     protected void onPause() {
         super.onPause();
@@ -131,13 +161,6 @@ public class CategorySelectActivity extends BaseActivity implements CategoryAdap
             categoryItem.setResourceId(resid);
             mCategoryList.add(categoryItem);
         }
-    }
-
-    @Override
-    public void onCategorySelected(CategoryItem categoryItem) {
-        Intent intent = new Intent(this, GroupPhotoActivity.class);
-        intent.putExtra(GroupPhotoActivity.CATEGORY_INTENT, categoryItem);
-        startActivity(intent);
     }
 
     @Override
